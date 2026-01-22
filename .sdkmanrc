@@ -1,0 +1,6 @@
+# SDKMAN configuration file
+# This file specifies which Java version to use for this project
+# Run 'sdk env install' to install the specified versions
+# Run 'sdk env' to switch to the specified versions
+
+java=25-open
