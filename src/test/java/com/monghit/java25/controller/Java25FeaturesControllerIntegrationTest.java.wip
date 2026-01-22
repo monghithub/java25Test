@@ -1,0 +1,186 @@
+package com.monghit.java25.controller;
+
+import com.monghit.java25.features.StructuredConcurrencyDemo;
+import com.monghit.java25.features.StableValuesDemo;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * Tests de integración para el controlador REST usando TestRestTemplate
+ */
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+class Java25FeaturesControllerIntegrationTest {
+
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    private String createUrl(String path) {
+        return "http://localhost:" + port + "/api/java25" + path;
+    }
+
+    // ==================== Endpoints Principales ====================
+
+    @Test
+    void getFeatures_shouldReturnFeaturesList() {
+        ResponseEntity<Map> response = restTemplate.getForEntity(
+                createUrl(""),
+                Map.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().get("message")).isEqualTo("Java 25 New Features Demo API");
+        assertThat(response.getBody().get("features")).isNotNull();
+    }
+
+    @Test
+    void health_shouldReturnHealthStatus() {
+        ResponseEntity<Map> response = restTemplate.getForEntity(
+                createUrl("/health"),
+                Map.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().get("status")).isEqualTo("UP");
+        assertThat(response.getBody().get("application")).isEqualTo("Java 25 Features Demo");
+    }
+
+    // ==================== Primitive Pattern Matching ====================
+
+    @Test
+    void processPrimitive_withInteger_shouldReturnResult() {
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                createUrl("/primitive-patterns/process"),
+                150,
+                String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("Integer");
+    }
+
+    @Test
+    void convertToInt_shouldReturnInteger() {
+        ResponseEntity<Integer> response = restTemplate.postForEntity(
+                createUrl("/primitive-patterns/convert"),
+                "123",
+                Integer.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(123);
+    }
+
+    // ==================== Scoped Values ====================
+
+    @Test
+    void testScopedValues_shouldProcessWithContext() {
+        String url = createUrl("/scoped-values/context?userId=user1&requestId=req1&tenantId=tenant1");
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("User: user1");
+    }
+
+    @Test
+    void testDefaultValue_shouldReturnDefaultInfo() {
+        ResponseEntity<Map> response = restTemplate.getForEntity(
+                createUrl("/scoped-values/default"),
+                Map.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).containsKey("hasContext");
+        assertThat(response.getBody()).containsKey("userId");
+    }
+
+    // ==================== Structured Concurrency ====================
+
+    @Test
+    void fetchUserData_shouldReturnCombinedData() throws Exception {
+        String url = createUrl("/structured-concurrency/user-data?userId=user1");
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("Profile-user1");
+    }
+
+    @Test
+    void aggregateData_shouldReturnSummary() throws Exception {
+        String url = createUrl("/structured-concurrency/aggregate?category=test");
+        ResponseEntity<StructuredConcurrencyDemo.Summary> response = restTemplate.getForEntity(
+                url,
+                StructuredConcurrencyDemo.Summary.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().count()).isEqualTo(42);
+    }
+
+    // ==================== Stable Values ====================
+
+    @Test
+    void getLazyConfig_shouldReturnConfig() {
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                createUrl("/stable-values/lazy-config"),
+                String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("config-loaded");
+    }
+
+    @Test
+    void getConnection_shouldReturnDatabaseConnection() {
+        ResponseEntity<StableValuesDemo.DatabaseConnection> response = restTemplate.getForEntity(
+                createUrl("/stable-values/connection"),
+                StableValuesDemo.DatabaseConnection.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().host()).isEqualTo("localhost");
+        assertThat(response.getBody().port()).isEqualTo(5432);
+    }
+
+    // ==================== Module Import ====================
+
+    @Test
+    void getModuleImportInfo_shouldReturnInfo() {
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                createUrl("/module-imports/info"),
+                String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("Module Import");
+    }
+
+    @Test
+    void getModuleExample_shouldReturnExample() {
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                createUrl("/module-imports/example"),
+                String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("module-info.java");
+    }
+}
