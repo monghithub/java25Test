@@ -274,6 +274,65 @@ Mejoras en JFR incluyendo method timing, bytecode instrumentation y CPU time pro
 
 **Nota:** Usar con herramientas de monitoreo JFR.
 
+## Documentación Detallada
+
+Cada funcionalidad de Java 25 tiene su propia documentación detallada en la carpeta `docs/`:
+
+1. **[Primitive Types in Patterns](docs/primitive-types-in-patterns.md)** (JEP 455 - Preview)
+   - Sintaxis y uso de pattern matching con primitivos
+   - Comparación con pattern matching de objetos
+   - Casos de uso y ejemplos prácticos
+   - Mejores prácticas
+
+2. **[Scoped Values](docs/scoped-values.md)** (JEP 481 - Final)
+   - Conceptos fundamentales de Scoped Values
+   - Comparación con ThreadLocal
+   - Integración con Virtual Threads
+   - Ejemplos de contextos multi-tenant y logging
+
+3. **[Structured Concurrency](docs/structured-concurrency.md)** (JEP 505 - Preview)
+   - Principios de concurrencia estructurada
+   - API de StructuredTaskScope
+   - Patrones comunes (parallel aggregation, first success, fan-out/fan-in)
+   - Ejemplos con microservicios y data pipelines
+
+4. **[Stable Values](docs/stable-values.md)** (JEP 572 - Preview)
+   - Inmutabilidad diferida (deferred immutability)
+   - Lazy initialization thread-safe
+   - Comparación con volatile, AtomicReference y double-checked locking
+   - Benchmarks y rendimiento
+
+5. **[Module Import Declarations](docs/module-import-declarations.md)** (JEP 476 - Final)
+   - Sintaxis de module imports
+   - Diferencias con wildcard imports
+   - Casos de uso y limitaciones
+   - Ejemplos con módulos personalizados
+
+6. **[Instance Main Methods](docs/instance-main-methods.md)** (JEP 495 - Final)
+   - Evolución del método main en Java
+   - Variantes del main method
+   - Orden de prioridad de métodos main
+   - Casos de uso educativos
+
+7. **[Compact Object Headers](docs/compact-object-headers.md)** (JEP 519 - Product)
+   - Reducción de memory overhead de objetos
+   - Impacto en rendimiento y GC
+   - Benchmarks y comparación Java 24 vs Java 25
+   - Verificación y herramientas de análisis
+
+8. **[JDK Flight Recorder Enhancements](docs/jdk-flight-recorder.md)**
+   - Mejoras en JFR para Java 25
+   - Eventos personalizados y Streaming API
+   - Integración con Virtual Threads
+   - Análisis de datos y herramientas
+
+Cada documento incluye:
+- Explicación detallada de conceptos
+- Ejemplos de código completos y funcionales
+- Casos de uso reales
+- Mejores prácticas y consideraciones
+- Referencias a JEPs y documentación oficial
+
 ## Endpoints de la API
 
 ### Información General
