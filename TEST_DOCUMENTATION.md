@@ -4,7 +4,7 @@
 
 Suite completa de tests para la aplicación de demostración de características de Java 25.
 
-**Estado actual:** ✅ **90 tests pasando, 0 fallos, 0 errores**
+**Estado actual:** ✅ **110 tests pasando, 0 fallos, 0 errores**
 
 ## Estructura de Tests
 
@@ -109,7 +109,30 @@ Suite completa de tests para la aplicación de demostración de características
 
 ### Tests de Integración
 
-#### 6. Java25FeaturesApplicationTest
+#### 6. Java25FeaturesControllerTest
+**Archivo:** `src/test/java/com/monghit/java25/controller/Java25FeaturesControllerTest.java`
+**Tests:** 20
+**Cobertura:**
+- Tests de integración del REST controller con Spring Boot 4.0
+- Uso de `@WebMvcTest` compatible con Spring Boot 4.0
+- MockMvc para simular peticiones HTTP
+- Mockito para simular servicios
+
+**Endpoints testeados:**
+- Root endpoints (GET `/api/java25`, GET `/api/java25/health`) - 2 tests
+- Primitive Pattern Matching endpoints - 4 tests
+- Scoped Values endpoints - 4 tests
+- Structured Concurrency endpoints - 5 tests
+- Stable Values endpoints - 3 tests
+- Module Import endpoints - 2 tests
+
+**Nota importante:** Compatible con Spring Boot 4.0 usando:
+- `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest` (nuevo paquete en 4.0)
+- Dependencia `spring-boot-starter-webmvc-test` agregada al `pom.xml`
+
+---
+
+#### 7. Java25FeaturesApplicationTest
 **Archivo:** `src/test/java/com/monghit/java25/Java25FeaturesApplicationTest.java`
 **Tests:** 1
 **Cobertura:**
@@ -169,8 +192,9 @@ mvn clean test
 | StructuredConcurrencyDemo | 16 | ✅ |
 | StableValuesDemo | 16 | ✅ |
 | ModuleImportDemo | 15 | ✅ |
+| Java25FeaturesController | 20 | ✅ |
 | Java25FeaturesApplication | 1 | ✅ |
-| **TOTAL** | **90** | **✅** |
+| **TOTAL** | **110** | **✅** |
 
 ---
 
@@ -237,8 +261,11 @@ mvn test  # Ya configurado en pom.xml
 ### Comportamiento de ScopedValues
 Los ScopedValues en Java 25 NO se propagan automáticamente a virtual threads creados con `Thread.ofVirtual().start()`. Los tests están ajustados para reflejar este comportamiento.
 
-### Test de Integración del Controller
-El test de integración del controller (`Java25FeaturesControllerIntegrationTest`) está temporalmente deshabilitado debido a cambios en las APIs de testing de Spring Boot 4.0. Los tests unitarios cubren toda la lógica de negocio.
+### Spring Boot 4.0 Testing Changes
+El test del controller (`Java25FeaturesControllerTest`) utiliza las nuevas APIs de testing de Spring Boot 4.0:
+- **Paquete actualizado:** `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest` (antes estaba en `org.springframework.boot.test.autoconfigure.web.servlet`)
+- **Dependencia nueva:** `spring-boot-starter-webmvc-test` agregada al `pom.xml`
+- **`@WebMvcTest`** no requiere `@AutoConfigureMockMvc` cuando se usa directamente (esto solo aplica a `@SpringBootTest`)
 
 ---
 
@@ -257,7 +284,7 @@ El reporte estará disponible en: `target/site/jacoco/index.html`
 
 1. ✅ Tests unitarios completos para todas las features
 2. ✅ Test de contexto de Spring Boot
-3. ⏳ Test de integración del controller (pendiente por APIs de Spring Boot 4.0)
+3. ✅ Test de integración del controller (implementado con Spring Boot 4.0)
 4. ⏳ Configuración de JaCoCo para cobertura
 5. ⏳ Tests de rendimiento (opcional)
 
